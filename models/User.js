@@ -1,0 +1,53 @@
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+
+// create User model
+class User extends Model {}
+
+// define table columns and config
+User.init(
+    {
+        // define an id colum
+        id: {
+            // use the special Sequelize datatypes object provide what type of data it is
+            type: DataTypes.INTEGER,
+            // this is the equivalent of SQL's `NOT NULL` option
+            allowNull: false,
+            // instruct that this is the Primary Key
+            primaryKey: true,
+            // turn on auto increment
+            autoIncrement: true
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            // there cannot be any duplicate email values in this table
+            unique: true,
+            // if allowNull is set to false, we can run our data through validators before creating the table data
+            validate: {
+                isEmail: true
+            }
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                // this means the password must be at least four characters long
+                len: [4]
+            }
+        }
+    },
+    {
+        sequelize,
+        timestamps: false,
+        freezeTableName: true,
+        underscored: true,
+        modelName: 'user'
+    }
+);
+
+module.exports = User;
